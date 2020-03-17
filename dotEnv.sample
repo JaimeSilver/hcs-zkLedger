@@ -1,0 +1,4 @@
+OPERATOR_ID=0.0.xxxx
+OPERATOR_KEY=302xxx
+MIRROR_NODE_ADDRESS=hcs.testnet.mirrornode.hedera.com:5600
+##MIRROR_NODE_ADDRESS=api.testnet.kabuto.sh:50211
