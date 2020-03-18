@@ -334,35 +334,6 @@ public final class exampleTrader {
 			}
 		}
 
-		// Routines to validate integrity (known data Public / Private)
-		ECPoint[] BankPKs = parameters.getPublicKeys();
-		BigInteger totalV = BigInteger.ZERO;
-		BigInteger totalR = BigInteger.ZERO;
-		for (int i = 0; i < Total_participants; i++) {
-			ECPoint temp = parameters.getH().multiply(BanksSecretKeys[i]);
-			if (!temp.equals(BankPKs[i])) {
-				System.out.println("Keys for " + i + " WRONG!!");
-			}
-			BigInteger auxR = trans0.getPedersen(i).getOpen().getRandomness();
-			BigInteger auxV = trans0.getPedersen(i).getOpen().getValue();
-			totalR = totalR.add(auxR);
-			totalV = totalV.add(auxV);
-			temp = parameters.getH().multiply(BanksSecretKeys[i].multiply(auxR));
-			if (temp.equals(BankPKs[i].multiply(auxV))) {
-				if (!temp.equals(trans0.getAuditTokens(i))) {
-					System.out.println("Tokens are NOT correct " + i);
-					return;
-				}
-			}
-			BigInteger auxExp = (BanksSecretKeys[i].multiply(auxV));
-			temp = parameters.getG().multiply(auxExp);
-			ECPoint lhs = trans0.getAuditTokens(i).add(temp);
-			ECPoint rhs = (trans0.getPedersen(i).getCommitment()).multiply(BanksSecretKeys[i]);
-			if (!lhs.equals(rhs)) {
-				System.out.println("Integrity test failed for " + i);
-			}
-		}
-
 		// Clean the HCS backlog
 		while (hcs.GetMessageQueue() != 0) {
 			try {
