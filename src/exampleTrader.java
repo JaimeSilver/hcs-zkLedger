@@ -283,7 +283,7 @@ public final class exampleTrader {
 		cacheBalance = trans2.addBalance(cacheBalance);
 
 		rPR = ProofUtils.randomNumber();
-		currentNet = cacheBalance[0];
+		currentNet = cacheBalance[1];
 		proof = trans1.buildProofAssets(bulletParameters, 1, currentNet, rPR);
 		commRP = bulletParameters.getBase().commit(currentNet, rPR);
 
@@ -310,13 +310,16 @@ public final class exampleTrader {
 		System.out.println("Sending Proof of Assets of Transaction TWO");
 		System.out.println();
 
-		/*
-		 * try { TransactionReceipt msgReceipt0 = null; TransactionReceipt msgReceipt1 =
-		 * null; msgReceipt0 = hcs.execute(proof.serialize(), false)[0]; msgReceipt1 =
-		 * hcs.execute(commRP.stringRepresentation(), false)[0]; } catch
-		 * (InterruptedException e1) { e1.printStackTrace(); } catch
-		 * (HederaStatusException e1) { e1.printStackTrace(); }
-		 */
+		try {
+			TransactionReceipt msgReceipt0 = null;
+			TransactionReceipt msgReceipt1 = null;
+			msgReceipt0 = hcs.execute(proof.serialize(), false)[0];
+			msgReceipt1 = hcs.execute(commRP.stringRepresentation(), false)[0];
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		} catch (HederaStatusException e1) {
+			e1.printStackTrace();
+		}
 
 		// Calculate Proof of Consistency Token1P and Token2P
 		currentNet = cacheBalance[1];
@@ -360,8 +363,12 @@ public final class exampleTrader {
 			}
 		}
 
+		// Clean the HCS backlog
 		while (hcs.GetMessageQueue() != 0) {
 			try {
+				System.out.println("**********************************************");
+				System.out.println("HCS missing messages: " + hcs.GetMessageQueue());
+				System.out.println("Sleep: 1 second and Retry");
 				Thread.sleep(1000);
 			} catch (InterruptedException e) { // TODO Auto-generated catch block
 				e.printStackTrace();
